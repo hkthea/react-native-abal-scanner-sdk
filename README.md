@@ -32,7 +32,16 @@
 ```javascript
 import RNAbalScannerSdk from 'react-native-abal-scanner-sdk';
 
-// TODO: What to do with the module?
-RNAbalScannerSdk;
+RNAbalScannerSdk.startScan();
+
+RNAbalScannerSdk.stopScan();
+
+RNAbalScannerSdk.openScan();
+
+RNAbalScannerSdk.closeScan();
+
+RNAbalScannerSdk.on('scan.rcv.message', event=>{
+  console.log(event);      
+})  
 ```
   
