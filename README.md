@@ -1,6 +1,8 @@
 
 # react-native-abal-scanner-sdk
 
+This Library for T80 PDA Barcode Scanner with React-native
+
 ## Getting started
 
 `$ npm install react-native-abal-scanner-sdk --save`
@@ -44,4 +46,3 @@ RNAbalScannerSdk.on('scan.rcv.message', event=>{
   console.log(event);      
 })  
 ```
-  

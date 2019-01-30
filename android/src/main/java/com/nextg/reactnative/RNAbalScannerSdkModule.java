@@ -29,14 +29,19 @@ public class RNAbalScannerSdkModule extends ReactContextBaseJavaModule {
     private final static String SCAN_ACTION = "scan.rcv.message";
     private final static boolean D = true;
     private String barcodeStr;
+    private boolean isCompatible=true;
 
     public RNAbalScannerSdkModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
-        sm = new ScanDevice();
-        IntentFilter filter = new IntentFilter();
-		filter.addAction(SCAN_ACTION);
-		reactContext.registerReceiver(mScanReceiver, filter);
+        try {
+            sm = new ScanDevice();
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(SCAN_ACTION);
+            reactContext.registerReceiver(mScanReceiver, filter);            
+        } catch (Exception e) {
+            isCompatible=false;
+        }
     }
 
     @Override
@@ -49,11 +54,7 @@ public class RNAbalScannerSdkModule extends ReactContextBaseJavaModule {
         @Override
         public void onReceive(Context context, Intent intent) {
             // TODO Auto-generated method stub
-
-            // byte[] barocode = intent.getByteArrayExtra("barocode");
-            // int barocodelen = intent.getIntExtra("length", 0);
-            // byte temp = intent.getByteExtra("barcodeType", (byte) 0);
-            // byte[] aimid = intent.getByteArrayExtra("aimid");
+            
             WritableMap params = Arguments.createMap();
             barcodeStr = sm.getScanCodeValue();//new String(barocode, 0, barocodelen);
             int scannerType= sm.getScannerType();
@@ -62,9 +63,6 @@ public class RNAbalScannerSdkModule extends ReactContextBaseJavaModule {
             params.putInt("scannerType", scannerType);
             params.putInt("barcodeType", barcodeType);
 
-            // showScanResult.append("Broadcast：");
-            // showScanResult.append(barcodeStr);
-            // showScanResult.append("\n");
             sm.stopScan();
             sendEvent(SCAN_ACTION, params);
         }
@@ -82,36 +80,28 @@ public class RNAbalScannerSdkModule extends ReactContextBaseJavaModule {
         }
     }
 
-    // @override
-    // public ReactContextBaseJavaModule(ReactApplicationContext reactContext) 
-    // {
-    //     super.ReactContextBaseJavaModule(reactContext);
-    //     sm = new ScanDevice();
-    // }
-    
-
     @ReactMethod
     public void closeScanner()
     {
-        sm.closeScan();
+        if(isCompatible)sm.closeScan();
     }
 
     @ReactMethod
     public void openScanner()
     {
-        sm.openScan();
+        if(isCompatible)sm.openScan();
     }
 
     @ReactMethod
     public void startScanner()
     {
-        sm.startScan();
+        if(isCompatible)sm.startScan();
     }
 
     @ReactMethod
     public void stopScanner()
     {
-        sm.stopScan();
+        if(isCompatible)sm.stopScan();
     }
 
     @Override
@@ -119,6 +109,7 @@ public class RNAbalScannerSdkModule extends ReactContextBaseJavaModule {
     {
         final Map<String, Object> constants=new HashMap<>();
         constants.put("SCAN_ACTION",SCAN_ACTION);
+        constants.put("isCompatible",isCompatible);
         return constants;
     }
 
